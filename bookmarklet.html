@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+<form name="datainput">
+  <table>
+    <tbody>
+      <tr>
+        <td>test</td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
+<script type="text/javascript">
+function getFile() {
+  var d=document;
+  iDiv=d.createElement('div');
+  iDiv.innerHTML = '<input type="file" id="ech"/>';
+  d.body.appendChild(iDiv);
+
+  function readFile() {
+    var f = new FileReader()
+    f.onload = function(e) {
+      r = e.target.result
+      ra = r.split(/\r\n/)
+      ra.forEach(function(ral) {
+        if(ral == "") return;
+        var matches = ral.match(/([0-9]{2});(.+)/)
+        if(localStorage.getItem(matches[1])) {
+          console.log(matches[1] + " already exists!")
+        }
+        localStorage.setItem(matches[1], matches[2])
+      })
+      dealWithLocalStorage()
+    }
+    var res = f.readAsText(d.getElementById('ech').files[0])
+  }
+  iDiv.children[0].onchange = readFile
+  d.body.appendChild(iDiv);
+}
+if(window.localStorage.length == 0) {
+  getFile()
+} else {
+  dealWithLocalStorage()
+}
+
+function doFill(answersString) {
+  answersArray = answersString.split(';')
+  if(document.getElementById('Q1_1_1')) {
+    for(i=1;i<answersArray.length;i++)document.getElementById('Q1_'+answersArray[i]+'_1').click();
+  } else {
+    for(i=1;i<answersArray.length;i++) console.log(answersArray[i]+'_1')
+  }
+}
+
+function dealWithLocalStorage() {
+  for(i in localStorage) {
+    if(parseInt(i)) currentNo = i
+    break
+  }
+  returnHTML = "Deze vragenlijst is voor no. " + currentNo + "<br><br>"
+
+  returnHTML += "Leerlingnummers over:<pre>"
+  for(i in localStorage) {
+    if(parseInt(i)) {
+      returnHTML += i + "\r\n"
+    }
+  }
+  returnHTML += "</pre>"
+  document.querySelector('form[name="datainput"] tbody>tr>td').innerHTML = returnHTML
+
+  doFill(localStorage.getItem(currentNo))
+}
+</script>
+
+<script type="text/javascript" id="muhJs">
+</script>
+    <!-- javascript:var i,s,ss=['http://kathack.com/js/kh.js','http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js'];for(i=0;i!=ss.length;i++){s=document.createElement('script');s.src=ss[i];document.body.appendChild(s);}void(0); -->
+
+    <a href="#" id="newAnchor">
+      JS Bookmarklet
+    </a>
+
+    <script type="text/javascript">
+      newAnchor.href = 'javascript:' + encodeURIComponent(muhJs.innerText)
+    </script>
+
+  </body>
+</html>
