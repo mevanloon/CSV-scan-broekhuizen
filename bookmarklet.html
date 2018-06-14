@@ -17,10 +17,7 @@
 
 <script type="text/javascript" id="muhJs">
 function getFile() {
-  var d=document;
-  iDiv=d.createElement('div');
-  iDiv.innerHTML = '<input type="file" id="ech"/>';
-  d.body.appendChild(iDiv);
+  document.querySelector('form[name="datainput"] tbody>tr>td').innerHTML = '<input type="file" id="ech"/>';
 
   function readFile() {
     var f = new FileReader()
@@ -37,10 +34,9 @@ function getFile() {
       })
       dealWithLocalStorage()
     }
-    var res = f.readAsText(d.getElementById('ech').files[0])
+    var res = f.readAsText(document.querySelector('form[name="datainput"] tbody>tr>td #ech').files[0])
   }
-  iDiv.children[0].onchange = readFile
-  d.body.appendChild(iDiv);
+  document.querySelector('form[name="datainput"] tbody>tr>td #ech').onchange = readFile
 }
 if(window.localStorage.length == 0) {
   getFile()
@@ -62,6 +58,20 @@ function doFill(answersString) {
     for(i=0;i<answersArray.length;i++) console.log(i+'_'+answersArray[i])
   }
 }
+function goToNext(currentNo) {
+  window.event.preventDefault()
+  console.log('Just did this one: ', currentNo)
+  localStorage.removeItem(currentNo)
+  dealWithLocalStorage()
+  // document.getElementById('qb2').click()
+}
+function clearLocal() {
+  window.event.preventDefault()
+  localStorage.clear()
+  getFile()
+  document.querySelector('form[name="datainput"] tbody>tr>td').innerHTML = ""
+  return false
+}
 
 function dealWithLocalStorage() {
   currentNo = 0
@@ -70,6 +80,8 @@ function dealWithLocalStorage() {
     break
   }
   returnHTML = "Deze vragenlijst is voor no. " + currentNo + "<br><br>"
+  returnHTML += "<a href='#' onclick='goToNext(currentNo)'>Wis en ga naar volgende</a><br>"
+  returnHTML += "<a href='#' onclick='clearLocal()'>Wis localStorage</a><br><br>"
 
   returnHTML += "Leerlingnummers over:<pre>"
   for(i in localStorage) {
