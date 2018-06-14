@@ -15,7 +15,7 @@
   </table>
 </form>
 
-<script type="text/javascript">
+<script type="text/javascript" id="muhJs">
 function getFile() {
   var d=document;
   iDiv=d.createElement('div');
@@ -51,13 +51,20 @@ if(window.localStorage.length == 0) {
 function doFill(answersString) {
   answersArray = answersString.split(';')
   if(document.getElementById('Q1_1_1')) {
-    for(i=1;i<answersArray.length;i++)document.getElementById('Q1_'+answersArray[i]+'_1').click();
+    for(i=0;i<answersArray.length;i++) {
+      var questionId = i+1
+      var answerToClickId = 'Q1_'+questionId+'_'+answersArray[i]
+
+      document.getElementById(answerToClickId).click();
+    }
+    console.log(i, answersArray[i])
   } else {
-    for(i=1;i<answersArray.length;i++) console.log(answersArray[i]+'_1')
+    for(i=0;i<answersArray.length;i++) console.log(i+'_'+answersArray[i])
   }
 }
 
 function dealWithLocalStorage() {
+  currentNo = 0
   for(i in localStorage) {
     if(parseInt(i)) currentNo = i
     break
@@ -76,10 +83,6 @@ function dealWithLocalStorage() {
   doFill(localStorage.getItem(currentNo))
 }
 </script>
-
-<script type="text/javascript" id="muhJs">
-</script>
-    <!-- javascript:var i,s,ss=['http://kathack.com/js/kh.js','http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js'];for(i=0;i!=ss.length;i++){s=document.createElement('script');s.src=ss[i];document.body.appendChild(s);}void(0); -->
 
     <a href="#" id="newAnchor">
       JS Bookmarklet
